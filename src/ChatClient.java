@@ -1,3 +1,5 @@
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.*;
 
@@ -8,6 +10,9 @@ public class ChatClient extends JFrame implements Runnable {
 
 	Socket socket;
 	JTextArea ta;
+	
+	JButton send, logout;
+	JTextField tf;
 	
 	Thread thread; 
 	
@@ -20,9 +25,39 @@ public class ChatClient extends JFrame implements Runnable {
 		super(login); //Super constructor to name JFrame
 		LoginName = login;
 		
+		//Instantiate objects
 		ta = new JTextArea(18, 50);
+		tf = new JTextField(50);
 		
-		socket = new Socket("localhost", 5218);
+		send = new JButton("Send");
+		logout = new JButton("Logout");
+		
+		
+		//Sends the Login Name and Data when the send button is pressed
+		send.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					dout.writeUTF(LoginName + " " + "DATA" + tf.getText().toString());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}			
+		});
+
+		//Sends the Login Name and Data when the send button is pressed
+		logout.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					dout.writeUTF(LoginName + " " + "LOGOUT");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}			
+		});
+		
+		socket = new Socket("localhost", 5215);
 		
 		din = new DataInputStream(socket.getInputStream()); //take from socket
 		dout = new DataOutputStream(socket.getOutputStream());
@@ -36,11 +71,14 @@ public class ChatClient extends JFrame implements Runnable {
 	}
 	
 	private void setup(){
+		//Create panel and add objects
 		setSize(600,400);
-		
+	
 		JPanel panel = new JPanel();
 		panel.add(new JScrollPane(ta)); //add a scroll pane to the text area
-		
+		panel.add(tf);
+		panel.add(send);
+		panel.add(logout);
 		add(panel); //add panel to JFrame
 		
 		setVisible(true);

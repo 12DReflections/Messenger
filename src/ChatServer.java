@@ -13,7 +13,7 @@ public class ChatServer {
 	
 	ChatServer() throws IOException{ //in case server fails
 		
-		ServerSocket server = new ServerSocket(5218); //need int for socket number
+		ServerSocket server = new ServerSocket(5215); //need int for socket number
 		ClientSockets = new Vector();//Initialise Vectors
 		LoginNames = new Vector();
 		
@@ -44,7 +44,7 @@ public class ChatServer {
 			String LoginName = din.readUTF(); //read the input stream as LoginName
 			
 			LoginNames.add(LoginName); //Add to the LoginName Vector
-			ClientSockets.add(ClientSockets);//Add to ClientSocket Vector
+			ClientSockets.add(ClientSocket);//Add to ClientSocket Vector
 			start(); //Start the thread
 		}
 		
@@ -56,13 +56,14 @@ public class ChatServer {
 					String LoginName = st.nextToken(); //first token
 					String MsgType = st.nextToken();
 					
+					if(MsgType == "LOGIN")
+					
+					
 					for(int i = 0; i < LoginNames.size(); i++){
 						Socket pSocket = (Socket) ClientSockets.elementAt(i); //for each client get socket, cast socket
 						DataOutputStream pOut = new DataOutputStream(pSocket.getOutputStream()); //Output stream from Socket
 						pOut.writeUTF(LoginName + " has logged in"); //Write to output stream
-					}
-					
-					
+					}		
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
