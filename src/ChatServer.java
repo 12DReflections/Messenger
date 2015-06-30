@@ -13,7 +13,7 @@ public class ChatServer {
 	
 	ChatServer() throws IOException{ //in case server fails
 		
-		ServerSocket server = new ServerSocket(5215); //need int for socket number
+		ServerSocket server = new ServerSocket(5210); //need int for socket number
 		ClientSockets = new Vector();//Initialise Vectors
 		LoginNames = new Vector();
 		
@@ -55,15 +55,47 @@ public class ChatServer {
 					StringTokenizer st = new StringTokenizer(msgFromClient); // makes easy to see who is sending
 					String LoginName = st.nextToken(); //first token
 					String MsgType = st.nextToken();
+					int lo = -1;
 					
-					if(MsgType == "LOGIN")
+					
+					//Msg String
+					String msg = "";
+					while(st.hasMoreTokens()){
+						msg = msg + " " + st.nextToken();
+					}
 					
 					
-					for(int i = 0; i < LoginNames.size(); i++){
-						Socket pSocket = (Socket) ClientSockets.elementAt(i); //for each client get socket, cast socket
-						DataOutputStream pOut = new DataOutputStream(pSocket.getOutputStream()); //Output stream from Socket
-						pOut.writeUTF(LoginName + " has logged in"); //Write to output stream
-					}		
+					if(MsgType.equals("LOGIN")){
+						for(int i = 0; i < LoginNames.size(); i++){
+							Socket pSocket = (Socket) ClientSockets.elementAt(i); //for each client get socket, cast socket
+							DataOutputStream pOut = new DataOutputStream(pSocket.getOutputStream()); //Output stream from Socket
+							pOut.writeUTF(LoginName + " has logged in"); //Write to output stream
+						}				
+					}
+					
+					else if(MsgType.equals("LOGOUT")){
+						for(int i = 0; i < LoginNames.size(); i++){
+							if(LoginName == LoginNames.elementAt(i))
+								lo = i; //lo = logged out
+							Socket pSocket = (Socket) ClientSockets.elementAt(i); //for each client get socket, cast socket
+							DataOutputStream pOut = new DataOutputStream(pSocket.getOutputStream()); //Output stream from Socket
+							pOut.writeUTF(LoginName + " has logged out"); //Write to output stream
+						}		
+						if(lo >= 0){ //Removes the client from both vectors when logging out
+							LoginNames.removeElementAt(lo);
+							ClientSockets.removeElementAt(lo);
+						}
+					}
+					else{
+						for(int i = 0; i < LoginNames.size(); i++){
+							Socket pSocket = (Socket) ClientSockets.elementAt(i); //for each client get socket, cast socket
+							DataOutputStream pOut = new DataOutputStream(pSocket.getOutputStream()); //Output stream from Socket
+							pOut.writeUTF(LoginName + ": " + msg); //Write to output stream
+							}				
+					}
+					
+					
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

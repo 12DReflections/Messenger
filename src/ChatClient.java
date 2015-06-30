@@ -38,7 +38,8 @@ public class ChatClient extends JFrame implements Runnable {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					dout.writeUTF(LoginName + " " + "DATA" + tf.getText().toString());
+					dout.writeUTF(LoginName + " " + "DATA " + tf.getText().toString()); //get Login name, Data Type and Text from TF as a string
+					tf.setText(""); //Removes the text
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -51,13 +52,14 @@ public class ChatClient extends JFrame implements Runnable {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					dout.writeUTF(LoginName + " " + "LOGOUT");
+					System.exit(1); //Close system when you press logout
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}			
 		});
 		
-		socket = new Socket("localhost", 5215);
+		socket = new Socket("localhost", 5210);
 		
 		din = new DataInputStream(socket.getInputStream()); //take from socket
 		dout = new DataOutputStream(socket.getOutputStream());
@@ -97,6 +99,6 @@ public class ChatClient extends JFrame implements Runnable {
 	}
 	
 	public static void main(String[] args) throws UnknownHostException, IOException{
-		ChatClient client = new ChatClient("User 1");
+		ChatClient client = new ChatClient("User 2");
 	}
 }
