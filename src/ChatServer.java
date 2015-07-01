@@ -12,8 +12,7 @@ public class ChatServer {
 	
 	
 	ChatServer() throws IOException{ //in case server fails
-		
-		ServerSocket server = new ServerSocket(5210); //need int for socket number
+		ServerSocket server = new ServerSocket(5267); //need int for socket number
 		ClientSockets = new Vector();//Initialise Vectors
 		LoginNames = new Vector();
 		
@@ -56,8 +55,7 @@ public class ChatServer {
 					String LoginName = st.nextToken(); //first token
 					String MsgType = st.nextToken();
 					int lo = -1;
-					
-					
+						
 					//Msg String
 					String msg = "";
 					while(st.hasMoreTokens()){
@@ -75,7 +73,7 @@ public class ChatServer {
 					
 					else if(MsgType.equals("LOGOUT")){
 						for(int i = 0; i < LoginNames.size(); i++){
-							if(LoginName == LoginNames.elementAt(i))
+							if(LoginName.equals(LoginNames.elementAt(i)))
 								lo = i; //lo = logged out
 							Socket pSocket = (Socket) ClientSockets.elementAt(i); //for each client get socket, cast socket
 							DataOutputStream pOut = new DataOutputStream(pSocket.getOutputStream()); //Output stream from Socket
@@ -93,7 +91,8 @@ public class ChatServer {
 							pOut.writeUTF(LoginName + ": " + msg); //Write to output stream
 							}				
 					}
-					
+					if(MsgType.equals("LOGOUT"))
+						break;
 					
 					
 				} catch (IOException e) {
